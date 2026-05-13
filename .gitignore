@@ -19,6 +19,14 @@
 
 # production
 /build
+/dist
+
+# tools
+.playwright-mcp/
+
+# Claude Code
+CLAUDE.md
+AGENTS.md
 
 # misc
 .DS_Store
