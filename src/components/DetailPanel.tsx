@@ -41,17 +41,17 @@ export default function DetailPanel({ mountain, rank, onClose }: Props) {
         <IconRow
           bg="bg-slate-500/10" color=""
           label="County" value={`Co. ${mountain.county}`}
-          icon={<img src="/icons/county.svg" className="w-4 h-4" />}
+          icon={<img src={import.meta.env.BASE_URL + 'icons/county.svg'} className="w-4 h-4" />}
         />
         <IconRow
           bg="bg-slate-500/10" color=""
           label="Mountain Range" value={mountain.range}
-          icon={<img src="/icons/mountain.svg" className="w-4 h-4" />}
+          icon={<img src={import.meta.env.BASE_URL + 'icons/mountain.svg'} className="w-4 h-4" />}
         />
         <IconRow
           bg="bg-slate-500/10" color=""
           label="Coordinates" value={`${mountain.lat.toFixed(4)}°N  ${Math.abs(mountain.lng).toFixed(4)}°W`}
-          icon={<img src="/icons/coordiantes.svg" className="w-4 h-4" />}
+          icon={<img src={import.meta.env.BASE_URL + 'icons/coordiantes.svg'} className="w-4 h-4" />}
         />
       </div>
 
@@ -76,7 +76,7 @@ export default function DetailPanel({ mountain, rank, onClose }: Props) {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
         <button onClick={onClose}
           className="absolute top-3 right-3 w-7 h-7 rounded-full bg-black/40 flex items-center justify-center hover:bg-black/70 transition-colors cursor-pointer">
-          <img src="/icons/close.svg" className="w-3 h-3" style={{ filter: 'brightness(0) invert(1)' }} />
+          <img src={import.meta.env.BASE_URL + 'icons/close.svg'} className="w-3 h-3" style={{ filter: 'brightness(0) invert(1)' }} />
         </button>
         <div className="absolute bottom-0 left-0 right-0 px-5 pb-4">
           <div className="flex items-end justify-between gap-2">
