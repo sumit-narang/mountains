@@ -540,9 +540,7 @@ export default function TerrainView({ mountains, selected, onSelect }: Props) {
           style={{ left: hovered3D.x, top: hovered3D.y - 16, transform: 'translate(-50%, -100%)' }}
         >
           <div style={{
-            background: 'rgba(15,20,30,0.55)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
+            background: '#636466',
             borderRadius: 14,
             padding: '8px 12px',
             boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
@@ -553,7 +551,7 @@ export default function TerrainView({ mountains, selected, onSelect }: Props) {
               <div style={{ fontWeight: 700, fontSize: 15, color: '#fff' }}>{hovered3D.mountain.name}</div>
               <div style={{ fontWeight: 700, fontSize: 15, color: '#fff', whiteSpace: 'nowrap' }}>{hovered3D.mountain.height.toLocaleString()}m</div>
             </div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginTop: 4 }}>Co. {hovered3D.mountain.county}</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginTop: 1 }}>Co. {hovered3D.mountain.county}</div>
           </div>
         </div>
       )}

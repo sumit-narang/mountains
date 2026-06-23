@@ -226,7 +226,7 @@ export default function MountainMapInner({ mountains, selected, onSelect }: Prop
                 <div style={{ fontWeight: 700, fontSize: 15, color: '#fff' }}>{hovered.name}</div>
                 <div style={{ fontWeight: 700, fontSize: 15, color: '#fff', whiteSpace: 'nowrap' }}>{hovered.height.toLocaleString()}m</div>
               </div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginTop: 4 }}>Co. {hovered.county}</div>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.55)', marginTop: 1 }}>Co. {hovered.county}</div>
             </div>
           </Popup>
         )}

@@ -1,4 +1,4 @@
-import { useState, useMemo, Suspense, useRef, useEffect } from 'react';
+import { useState, useMemo, Suspense, useRef, useEffect, useLayoutEffect } from 'react';
 import { mountains, Mountain } from '@/data/mountains';
 import MountainMap from '@/components/MountainMap';
 import DetailPanel from '@/components/DetailPanel';
@@ -8,6 +8,7 @@ import { lazy } from 'react';
 const TerrainView = lazy(() => import('@/components/TerrainView'));
 
 type View = 'map' | '3d';
+const VIEWS: View[] = ['map', '3d'];
 
 
 export default function App() {
@@ -25,6 +26,22 @@ export default function App() {
       listItemRefs.current.get(selected.id)?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
   }, [selected]);
+
+  // Sliding white indicator for the Map / 3D tabs (gym-cancel pill design)
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const [indicator, setIndicator] = useState({ left: 0, width: 0 });
+  useLayoutEffect(() => {
+    const btn = tabRefs.current[view];
+    if (btn) setIndicator({ left: btn.offsetLeft, width: btn.offsetWidth });
+  }, [view]);
+  useEffect(() => {
+    const onResize = () => {
+      const btn = tabRefs.current[view];
+      if (btn) setIndicator({ left: btn.offsetLeft, width: btn.offsetWidth });
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, [view]);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => { if (e.key === 'Escape') setSelected(null); };
@@ -62,20 +79,31 @@ export default function App() {
           <p className="text-xs text-slate-400 mt-0.5">
             Sorted by elevation
           </p>
-          {/* Map / 3D sub-toggle */}
-          <div className="mt-3 flex gap-1.5">
-            {(['map', '3d'] as View[]).map(v => {
+          {/* Map / 3D sub-toggle — gym-cancel pill design */}
+          <div className="mt-3 relative inline-flex items-center rounded-full p-1" style={{ background: 'rgba(0,0,0,0.05)' }}>
+            <div
+              className="absolute bg-white rounded-full shadow-sm"
+              style={{
+                left: indicator.left,
+                width: indicator.width,
+                top: 4,
+                bottom: 4,
+                transition: 'left 280ms cubic-bezier(0.32,0.72,0,1), width 280ms cubic-bezier(0.32,0.72,0,1)',
+              }}
+            />
+            {VIEWS.map(v => {
               const isActive = view === v;
               const label = v === 'map' ? 'Map' : '3D';
               const handleClick = () => { setView(v); if (v === '3d') setTerrain3DMounted(true); };
               return (
-                <SquircleBox key={v} r={14} style={{ padding: '1.5px', background: isActive ? '#0f172a' : 'rgb(203,213,225)' }}>
-                  <SquircleBox as="button" r={13} onClick={handleClick}
-                    className={`w-full px-5 py-1.5 text-xs font-semibold cursor-pointer ${isActive ? 'text-white' : 'text-slate-500 hover:text-slate-700 hover:bg-black/10'}`}
-                    style={{ background: isActive ? '#0f172a' : 'transparent' }}>
-                    {label}
-                  </SquircleBox>
-                </SquircleBox>
+                <button
+                  key={v}
+                  ref={el => { tabRefs.current[v] = el; }}
+                  onClick={handleClick}
+                  className={`relative z-10 px-5 py-1.5 text-xs font-medium rounded-full cursor-pointer transition-colors duration-[280ms] ${isActive ? 'text-black' : 'text-black/30 hover:text-black/70'}`}
+                >
+                  {label}
+                </button>
               );
             })}
           </div>
