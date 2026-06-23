@@ -81,6 +81,10 @@ export default function MountainMapInner({ mountains, selected, onSelect }: Prop
     const map: mapboxgl.Map | undefined = mapRef.current?.getMap();
     if (!map) return;
 
+    // Prefetch a sharper parent tile (closer to target zoom) so the brief
+    // placeholder shown while panning looks crisp instead of blurry "loading".
+    (map as unknown as { setPrefetchZoomDelta?: (n: number) => void }).setPrefetchZoomDelta?.(2);
+
     const canvas = map.getCanvas();
     let rotating = false;
     let lastX = 0;
@@ -136,6 +140,8 @@ export default function MountainMapInner({ mountains, selected, onSelect }: Prop
         mapboxAccessToken={TOKEN}
         mapStyle="mapbox://styles/mapbox/outdoors-v12"
         terrain={is3D ? { source: 'mapbox-dem', exaggeration: 2.5 } : undefined}
+        maxTileCacheSize={2000}
+        fadeDuration={0}
         fog={{
           color: 'rgb(215, 227, 244)',
           'high-color': 'rgb(80, 130, 210)',
