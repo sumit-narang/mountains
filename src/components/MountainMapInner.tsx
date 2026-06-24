@@ -21,6 +21,21 @@ const RANK_MAP: Record<number, number> = Object.fromEntries(
 
 const TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
+// Map padding keeps the focused area clear of the UI: the left panel on desktop,
+// the top bar + bottom sheet on mobile.
+function mapPadding(hasSelection: boolean) {
+  const mobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
+  if (mobile) {
+    return {
+      top: 84,
+      right: 16,
+      left: 16,
+      bottom: hasSelection ? Math.round(window.innerHeight * 0.5) : 196,
+    };
+  }
+  return { top: 12, right: 12, bottom: 12, left: hasSelection ? 636 : 308 };
+}
+
 
 const skyLayer: LayerProps = {
   id: 'sky',
@@ -61,7 +76,7 @@ export default function MountainMapInner({ mountains, selected, onSelect }: Prop
         bearing: -10,
         duration: 1400,
         essential: true,
-        padding: { left: 636, top: 12, right: 12, bottom: 12 },
+        padding: mapPadding(true),
       });
     } else {
       map.flyTo({
@@ -70,9 +85,18 @@ export default function MountainMapInner({ mountains, selected, onSelect }: Prop
         pitch: is3D ? 55 : 0,
         bearing: is3D ? -15 : 0,
         duration: 1200,
-        padding: { left: 308, top: 12, right: 12, bottom: 12 },
+        padding: mapPadding(false),
       });
     }
+  }, [selected]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Re-apply padding when the viewport changes (e.g. phone rotation, resize)
+  useEffect(() => {
+    const map = getMap();
+    if (!map) return;
+    const onResize = () => map.setPadding(mapPadding(!!selected));
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
   }, [selected]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const mapRef = useRef<MapRef>(null);
@@ -135,7 +159,7 @@ export default function MountainMapInner({ mountains, selected, onSelect }: Prop
     <div className="relative w-full h-full">
       <Map
         ref={mapRef}
-        initialViewState={{ longitude: -8.0, latitude: 53.5, zoom: 6.5, pitch: is3D ? 55 : 0, bearing: is3D ? -15 : 0, padding: { left: 308, top: 12, right: 12, bottom: 12 } }}
+        initialViewState={{ longitude: -8.0, latitude: 53.5, zoom: 6.5, pitch: is3D ? 55 : 0, bearing: is3D ? -15 : 0, padding: mapPadding(false) }}
         onLoad={setupCmdDragRotation}
         mapboxAccessToken={TOKEN}
         mapStyle="mapbox://styles/mapbox/outdoors-v12"
