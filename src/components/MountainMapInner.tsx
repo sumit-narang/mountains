@@ -21,6 +21,10 @@ const RANK_MAP: Record<number, number> = Object.fromEntries(
 
 const TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
+// Hover tooltips are a desktop affordance only — on touch devices a tap would
+// otherwise trigger the hover popup before opening the detail panel.
+const CAN_HOVER = typeof window !== 'undefined' && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
 // Map padding keeps the focused area clear of the UI: the left panel on desktop,
 // the top bar + bottom sheet on mobile.
 function mapPadding(hasSelection: boolean) {
@@ -60,6 +64,7 @@ export default function MountainMapInner({ mountains, selected, onSelect }: Prop
   const getMap = () => mapRef.current?.getMap();
 
   const handleMountainClick = useCallback((mountain: Mountain) => {
+    setHovered(null); // clear any tap-triggered hover state before opening detail
     onSelect(selected?.id === mountain.id ? null : mountain);
   }, [selected, onSelect]);
 
@@ -209,7 +214,7 @@ export default function MountainMapInner({ mountains, selected, onSelect }: Prop
               onClick={e => { e.originalEvent.stopPropagation(); handleMountainClick(mountain); }}
             >
               <div
-                onMouseEnter={() => setHovered(mountain)}
+                onMouseEnter={() => { if (CAN_HOVER) setHovered(mountain); }}
                 onMouseLeave={() => setHovered(null)}
                 style={{
                   width: isActive ? size * 1.3 : size,
@@ -239,8 +244,8 @@ export default function MountainMapInner({ mountains, selected, onSelect }: Prop
           );
         })}
 
-        {/* Hover popup (only when nothing is selected) */}
-        {hovered && !selected && (
+        {/* Hover popup (desktop only, when nothing is selected) */}
+        {CAN_HOVER && hovered && !selected && (
           <Popup
             longitude={hovered.lng}
             latitude={hovered.lat}

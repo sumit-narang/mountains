@@ -17,8 +17,13 @@ html,
 body {
   margin: 0;
   padding: 0;
+  height: 100%;
   background: #f8fafc;
   color: #0f172a;
+  /* Full-screen map app — the page itself never scrolls. Prevents the map/
+     background from moving (and iOS rubber-banding) while scrolling a sheet. */
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 .scrollbar-subtle {
