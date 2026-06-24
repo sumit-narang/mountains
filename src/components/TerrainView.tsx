@@ -540,13 +540,11 @@ export default function TerrainView({ mountains, selected, onSelect }: Props) {
           style={{ left: hovered3D.x, top: hovered3D.y - 16, transform: 'translate(-50%, -100%)' }}
         >
           <div style={{
-            background: 'rgba(15, 23, 42, 0.72)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
+            background: '#334155',
             border: '1px solid rgba(255, 255, 255, 0.12)',
             borderRadius: 14,
             padding: '8px 12px',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.3)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.35)',
             fontFamily: 'system-ui, sans-serif',
             minWidth: 160,
           }}>
